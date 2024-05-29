@@ -1,8 +1,7 @@
 #![allow(unused)]
 
-use std::os::unix::net::SocketAddr;
-
 use axum::{routing::get, Router};
+use tokio::net::{unix::SocketAddr, TcpListener};
 
 use crate::prelude::*;
 
@@ -13,15 +12,10 @@ mod routes;
 mod utils;
 
 #[tokio::main]
-fn main() -> Result<()> {
+async fn main() {
     let app = Router::new().route("/", get(routes::hello));
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    let listener = TcpListener::bind("0.0.0.0:3000").await.unwrap();
 
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
-        .await
-        .expect("Server failed to start");
-
-    Ok(())
+    axum::serve(listener, app).await.unwrap();
 }
