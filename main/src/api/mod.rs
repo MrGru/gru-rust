@@ -4,7 +4,10 @@ use axum::Router;
 
 use crate::state::AppState;
 
+mod error;
 mod handlers;
+mod json;
+mod middleware;
 mod request;
 mod response;
 mod v1;
